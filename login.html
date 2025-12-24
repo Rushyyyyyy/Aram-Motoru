@@ -4,91 +4,124 @@
 <meta charset="UTF-8">
 <title>Rush Shop | Lisans Girişi</title>
 
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="favicon.png">
+
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   height:100vh;
   background:
-    radial-gradient(circle at top,#0a2f1f,#000),
+    radial-gradient(circle at 20% 10%,#0aff9c33,transparent 40%),
+    radial-gradient(circle at 80% 90%,#00ffcc22,transparent 40%),
     linear-gradient(135deg,#000,#001a12);
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:Segoe UI,Arial;
   color:#00ff9c;
+  overflow:hidden;
 }
 
+/* CAM + NEON KART */
 .card{
   width:360px;
-  padding:32px;
-  background:rgba(0,0,0,.78);
-  border-radius:20px;
+  padding:34px;
+  background:rgba(0,0,0,.82);
+  border-radius:22px;
   text-align:center;
   border:1px solid rgba(0,255,156,.45);
   box-shadow:
-    0 0 20px rgba(0,255,156,.35),
-    inset 0 0 25px rgba(0,255,156,.15);
+    0 0 30px rgba(0,255,156,.45),
+    inset 0 0 30px rgba(0,255,156,.15);
   animation:glow 3s infinite alternate;
 }
 
 @keyframes glow{
-  from{box-shadow:0 0 18px rgba(0,255,156,.35)}
-  to{box-shadow:0 0 40px rgba(0,255,156,.65)}
+  from{box-shadow:0 0 20px rgba(0,255,156,.35)}
+  to{box-shadow:0 0 45px rgba(0,255,156,.75)}
 }
 
+/* LOGO */
 .logo{
-  width:90px;
+  width:88px;
   margin-bottom:10px;
+  filter:drop-shadow(0 0 12px #00ff9c);
 }
 
+/* BAŞLIK */
 h1{
-  margin:8px 0 0;
+  margin:6px 0 0;
   font-size:30px;
   letter-spacing:1px;
+  text-shadow:0 0 12px #00ff9c;
 }
 
 .sub{
-  font-size:13px;
+  font-size:12px;
   color:#7affc9;
   margin-bottom:22px;
+  letter-spacing:2px;
 }
 
+/* INPUT */
 input{
   width:100%;
   padding:13px;
-  margin-top:10px;
+  margin-top:12px;
   background:#020a07;
   border:1px solid rgba(0,255,156,.6);
-  border-radius:12px;
+  border-radius:14px;
   color:#00ff9c;
   outline:none;
+  transition:.2s;
+}
+
+input:focus{
+  box-shadow:0 0 15px rgba(0,255,156,.6);
 }
 
 input::placeholder{color:#6bffbf}
 
+/* BUTON */
 button{
   width:100%;
-  margin-top:18px;
-  padding:13px;
+  margin-top:20px;
+  padding:14px;
   background:linear-gradient(135deg,#00ff9c,#00b36b);
   border:none;
-  border-radius:14px;
+  border-radius:16px;
   font-size:15px;
   font-weight:700;
   cursor:pointer;
   color:#001a10;
-  transition:.2s;
+  transition:.25s;
 }
 
 button:hover{
-  transform:scale(1.04);
-  box-shadow:0 0 20px #00ff9c;
+  transform:scale(1.06);
+  box-shadow:0 0 28px #00ff9c;
 }
 
+/* MESAJ */
 #msg{
   margin-top:12px;
   font-size:13px;
+}
+
+/* FOOTER */
+.footer{
+  margin-top:22px;
+  font-size:11px;
+  color:#66ffbf;
+  opacity:.75;
+}
+
+.footer span{
+  color:#00ff9c;
+  text-shadow:0 0 8px #00ff9c;
 }
 </style>
 </head>
@@ -96,8 +129,9 @@ button:hover{
 <body>
 
 <div class="card">
+
   <!-- LOGO -->
-  <img src="rush-shop-logo.png" class="logo">
+  <img src="rush-shop-logo.png" class="logo" onerror="this.style.display='none'">
 
   <h1>Rush Shop</h1>
   <div class="sub">ONLINE STORE</div>
@@ -106,7 +140,13 @@ button:hover{
   <input id="pass" type="password" placeholder="Şifre">
 
   <button onclick="login()">Giriş Yap</button>
+
   <div id="msg"></div>
+
+  <div class="footer">
+    © <span>2025</span> Rush Shop – Tüm Hakları Saklıdır
+  </div>
+
 </div>
 
 <script>
