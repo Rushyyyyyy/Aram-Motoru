@@ -156,7 +156,7 @@ async function login(){
   const msg  = document.getElementById("msg");
 
   try{
-    const r = await fetch("https://LISANS-API.vercel.app/api/login",{
+    const r = await fetch("https://rush-license-system.vercel.app/arama-motoru/licenses.json",{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify({ nickname:nick, password:pass })
