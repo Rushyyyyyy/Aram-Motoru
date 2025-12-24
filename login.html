@@ -1,28 +1,142 @@
-<input id="nick" placeholder="Nickname">
-<input id="pass" type="password" placeholder="Şifre">
-<button onclick="login()">Giriş</button>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Rush Shop | Lisans Girişi</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at top,#0a2f1f,#000),
+    linear-gradient(135deg,#000,#001a12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Segoe UI,Arial;
+  color:#00ff9c;
+}
+
+.card{
+  width:360px;
+  padding:32px;
+  background:rgba(0,0,0,.78);
+  border-radius:20px;
+  text-align:center;
+  border:1px solid rgba(0,255,156,.45);
+  box-shadow:
+    0 0 20px rgba(0,255,156,.35),
+    inset 0 0 25px rgba(0,255,156,.15);
+  animation:glow 3s infinite alternate;
+}
+
+@keyframes glow{
+  from{box-shadow:0 0 18px rgba(0,255,156,.35)}
+  to{box-shadow:0 0 40px rgba(0,255,156,.65)}
+}
+
+.logo{
+  width:90px;
+  margin-bottom:10px;
+}
+
+h1{
+  margin:8px 0 0;
+  font-size:30px;
+  letter-spacing:1px;
+}
+
+.sub{
+  font-size:13px;
+  color:#7affc9;
+  margin-bottom:22px;
+}
+
+input{
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  background:#020a07;
+  border:1px solid rgba(0,255,156,.6);
+  border-radius:12px;
+  color:#00ff9c;
+  outline:none;
+}
+
+input::placeholder{color:#6bffbf}
+
+button{
+  width:100%;
+  margin-top:18px;
+  padding:13px;
+  background:linear-gradient(135deg,#00ff9c,#00b36b);
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  color:#001a10;
+  transition:.2s;
+}
+
+button:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 20px #00ff9c;
+}
+
+#msg{
+  margin-top:12px;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <!-- LOGO -->
+  <img src="rush-shop-logo.png" class="logo">
+
+  <h1>Rush Shop</h1>
+  <div class="sub">ONLINE STORE</div>
+
+  <input id="nick" placeholder="Nickname">
+  <input id="pass" type="password" placeholder="Şifre">
+
+  <button onclick="login()">Giriş Yap</button>
+  <div id="msg"></div>
+</div>
 
 <script>
 async function login(){
-  const nick = nick.value;
-  const pass = pass.value;
+  const nick = document.getElementById("nick").value;
+  const pass = document.getElementById("pass").value;
+  const msg  = document.getElementById("msg");
 
-  const r = await fetch("https://rush-license-system.vercel.app/arama-motoru/license.json", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ nickname:nick, password:pass })
-  });
+  try{
+    const r = await fetch("https://LISANS-API.vercel.app/api/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ nickname:nick, password:pass })
+    });
+    const d = await r.json();
 
-  const d = await r.json();
+    if(!d.success){
+      msg.innerText = "❌ " + d.error;
+      return;
+    }
 
-  if(!d.success){
-    alert(d.error);
-    return;
+    sessionStorage.setItem("licensed","1");
+    sessionStorage.setItem("days",d.daysLeft);
+    location.href = "search.html";
+
+  }catch{
+    msg.innerText = "❌ Sunucuya bağlanılamadı";
   }
-
-  sessionStorage.setItem("licensed","1");
-  sessionStorage.setItem("days",d.daysLeft);
-
-  location.href = "search.html";
 }
 </script>
+
+</body>
+</html>
