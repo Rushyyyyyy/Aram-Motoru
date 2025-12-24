@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const WEBHOOK = "https://discord.com/api/webhooks/XXX/YYY";
+const WEBHOOK = "https://canary.discord.com/api/webhooks/1453477416935755776/eZ33OHS_oQPkdyBTA9iOGB8xDgoRyN7taC2AnfGf00hne4SRWKhMRmQFk2RTUzN97t9t";
 
 export default async function handler(req, res) {
 
