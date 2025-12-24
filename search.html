@@ -1,0 +1,9 @@
+<script>
+const days = parseInt(localStorage.getItem("daysLeft"));
+if (localStorage.getItem("licensed") !== "true" || days <= 0) {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+</script>
+
+<script async src="https://cse.google.com/cse.js?cx=BURAYA_CX_KODUN"></script>
