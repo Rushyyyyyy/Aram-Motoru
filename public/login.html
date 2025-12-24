@@ -7,53 +7,59 @@
 body{
   margin:0;
   height:100vh;
-  background:black;
-  color:#0ff;
+  background:#050505;
+  color:#00ffff;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   font-family:Arial;
 }
 .box{
   padding:30px;
-  border:1px solid #0ff;
+  border:1px solid #00ffff;
   border-radius:12px;
-  box-shadow:0 0 25px #0ff;
+  box-shadow:0 0 25px #00ffff;
+  width:300px;
 }
 input,button{
   width:100%;
   padding:10px;
-  margin:6px 0;
+  margin-top:8px;
   background:black;
-  border:1px solid #0ff;
-  color:#0ff;
+  border:1px solid #00ffff;
+  color:#00ffff;
 }
+button{cursor:pointer;}
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h3>🔐 Lisans Girişi</h3>
+  <h3>🔐 Giriş</h3>
 
-  <input id="apiip" placeholder="API IP (örn: 1.2.3.4)">
   <input id="nick" placeholder="Nickname">
   <input id="pass" type="password" placeholder="Şifre">
+  <button onclick="login()">Giriş Yap</button>
 
-  <button onclick="login()">Giriş</button>
   <p id="msg"></p>
 </div>
 
 <script>
 async function login(){
-  const ip   = document.getElementById("apiip").value;
   const nick = document.getElementById("nick").value;
   const pass = document.getElementById("pass").value;
   const msg  = document.getElementById("msg");
 
-  const url = `https://${ip}/api/license?nick=${nick}&pass=${pass}`;
-
   try {
-    const res = await fetch(url);
+    const res = await fetch(
+      "https://API-SITEN.com/api/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nickname: nick, password: pass })
+      }
+    );
+
     const data = await res.json();
 
     if(!data.success){
@@ -61,12 +67,13 @@ async function login(){
       return;
     }
 
-    localStorage.setItem("licensed","true");
-    localStorage.setItem("daysLeft",data.daysLeft);
+    localStorage.setItem("auth","true");
+    localStorage.setItem("days", data.daysLeft);
 
     window.location.href = "search.html";
+
   } catch {
-    msg.innerText = "❌ API bağlantı hatası";
+    msg.innerText = "❌ Sunucu hatası";
   }
 }
 </script>
