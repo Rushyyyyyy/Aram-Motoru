@@ -1,0 +1,28 @@
+<input id="nick" placeholder="Nickname">
+<input id="pass" type="password" placeholder="Şifre">
+<button onclick="login()">Giriş</button>
+
+<script>
+async function login(){
+  const nick = nick.value;
+  const pass = pass.value;
+
+  const r = await fetch("https://API-ADRESI.vercel.app/api/login", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ nickname:nick, password:pass })
+  });
+
+  const d = await r.json();
+
+  if(!d.success){
+    alert(d.error);
+    return;
+  }
+
+  sessionStorage.setItem("licensed","1");
+  sessionStorage.setItem("days",d.daysLeft);
+
+  location.href = "search.html";
+}
+</script>
