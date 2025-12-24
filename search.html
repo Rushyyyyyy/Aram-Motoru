@@ -1,8 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Rush Shop | Search</title>
+
+<link rel="icon" type="image/png" href="favicon.png">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 10%,#00ff9c22,transparent 40%),
+    radial-gradient(circle at 90% 90%,#00ffc822,transparent 40%),
+    linear-gradient(135deg,#000,#001a12);
+  font-family:Segoe UI,Arial;
+  color:#00ff9c;
+  display:flex;
+  justify-content:center;
+  padding-top:90px;
+}
+
+/* ÜST BAR */
+.top{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:14px 30px;
+  background:rgba(0,0,0,.85);
+  border-bottom:1px solid rgba(0,255,156,.3);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 0 20px rgba(0,255,156,.3);
+}
+
+.brand{
+  font-size:18px;
+  font-weight:700;
+  text-shadow:0 0 10px #00ff9c;
+}
+
+.days{
+  font-size:13px;
+  color:#7affc9;
+}
+
+/* ANA KUTU */
+.container{
+  width:700px;
+  background:rgba(0,0,0,.82);
+  padding:32px;
+  border-radius:22px;
+  border:1px solid rgba(0,255,156,.4);
+  box-shadow:
+    0 0 35px rgba(0,255,156,.45),
+    inset 0 0 30px rgba(0,255,156,.12);
+}
+
+/* SEARCH */
+.search-box{
+  display:flex;
+  gap:12px;
+}
+
+input{
+  flex:1;
+  padding:14px;
+  background:#020a07;
+  border:1px solid rgba(0,255,156,.6);
+  border-radius:14px;
+  color:#00ff9c;
+  outline:none;
+}
+
+input:focus{
+  box-shadow:0 0 18px rgba(0,255,156,.6);
+}
+
+button{
+  padding:14px 26px;
+  background:linear-gradient(135deg,#00ff9c,#00b36b);
+  border:none;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+  color:#001a10;
+}
+
+button:hover{
+  box-shadow:0 0 22px #00ff9c;
+  transform:scale(1.05);
+}
+
+/* SONUÇLAR */
+.results{
+  margin-top:26px;
+  max-height:360px;
+  overflow-y:auto;
+  padding-right:6px;
+}
+
+.result{
+  padding:14px;
+  margin-bottom:12px;
+  background:rgba(0,255,156,.05);
+  border:1px solid rgba(0,255,156,.25);
+  border-radius:14px;
+  transition:.2s;
+}
+
+.result:hover{
+  box-shadow:0 0 18px rgba(0,255,156,.4);
+  transform:translateY(-2px);
+}
+
+.result a{
+  color:#00ff9c;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.result p{
+  margin:6px 0 0;
+  font-size:13px;
+  color:#7affc9;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{
+  background:#00ff9c;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <div class="brand">Rush Shop 🔎</div>
+  <div class="days">Kalan Gün: <span id="days">-</span></div>
+</div>
+
+<div class="container">
+
+  <div class="search-box">
+    <input id="q" placeholder="Aranacak kelime...">
+    <button onclick="search()">Ara</button>
+  </div>
+
+  <div class="results" id="results"></div>
+
+</div>
+
 <script>
-if(sessionStorage.getItem("licensed") !== "1"){
-  location.href = "login.html";
+// LİSANS KONTROL
+if(!sessionStorage.getItem("licensed")){
+  location.href="login.html";
+}
+
+document.getElementById("days").innerText =
+  sessionStorage.getItem("days") || "∞";
+
+// SEARCH (Google Custom / API / senin backend)
+async function search(){
+  const q = document.getElementById("q").value;
+  const res = document.getElementById("results");
+  res.innerHTML = "🔄 Aranıyor...";
+
+  try{
+    const r = await fetch(
+      "https://www.googleapis.com/customsearch/v1?q="+encodeURIComponent(q)+
+      "&key=GOOGLE_API_KEY&cx=CUSTOM_SEARCH_ID"
+    );
+    const d = await r.json();
+
+    res.innerHTML = "";
+
+    d.items.forEach(i=>{
+      res.innerHTML += `
+        <div class="result">
+          <a href="${i.link}" target="_blank">${i.title}</a>
+          <p>${i.snippet}</p>
+        </div>
+      `;
+    });
+
+  }catch{
+    res.innerHTML="❌ Arama başarısız";
+  }
 }
 </script>
 
-<script async src="https://cse.google.com/cse.js?cx=GOOGLE_CX"></script>
-<div class="gcse-search"></div>
+</body>
+</html>
