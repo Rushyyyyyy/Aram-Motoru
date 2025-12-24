@@ -1,182 +1,112 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<title>Rush Shop | Lisans Girişi</title>
-
-<!-- FAVICON -->
-<link rel="icon" type="image/png" href="favicon.png">
+<div id="app"></div>
 
 <style>
-*{box-sizing:border-box}
-
 body{
   margin:0;
-  height:100vh;
-  background:
-    radial-gradient(circle at 20% 10%,#0aff9c33,transparent 40%),
-    radial-gradient(circle at 80% 90%,#00ffcc22,transparent 40%),
-    linear-gradient(135deg,#000,#001a12);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:Segoe UI,Arial;
+  background:#000;
+  font-family:Arial;
   color:#00ff9c;
-  overflow:hidden;
 }
 
-/* CAM + NEON KART */
 .card{
-  width:360px;
-  padding:34px;
-  background:rgba(0,0,0,.82);
-  border-radius:22px;
-  text-align:center;
-  border:1px solid rgba(0,255,156,.45);
-  box-shadow:
-    0 0 30px rgba(0,255,156,.45),
-    inset 0 0 30px rgba(0,255,156,.15);
-  animation:glow 3s infinite alternate;
-}
-
-@keyframes glow{
-  from{box-shadow:0 0 20px rgba(0,255,156,.35)}
-  to{box-shadow:0 0 45px rgba(0,255,156,.75)}
-}
-
-/* LOGO */
-.logo{
-  width:88px;
-  margin-bottom:10px;
-  filter:drop-shadow(0 0 12px #00ff9c);
-}
-
-/* BAŞLIK */
-h1{
-  margin:6px 0 0;
-  font-size:30px;
-  letter-spacing:1px;
-  text-shadow:0 0 12px #00ff9c;
-}
-
-.sub{
-  font-size:12px;
-  color:#7affc9;
-  margin-bottom:22px;
-  letter-spacing:2px;
-}
-
-/* INPUT */
-input{
-  width:100%;
-  padding:13px;
-  margin-top:12px;
+  width:340px;
+  margin:80px auto;
+  padding:28px;
   background:#020a07;
-  border:1px solid rgba(0,255,156,.6);
-  border-radius:14px;
-  color:#00ff9c;
-  outline:none;
-  transition:.2s;
+  border-radius:20px;
+  border:1px solid #00ff9c;
+  box-shadow:0 0 30px #00ff9c;
+  text-align:center;
 }
 
-input:focus{
-  box-shadow:0 0 15px rgba(0,255,156,.6);
-}
-
-input::placeholder{color:#6bffbf}
-
-/* BUTON */
-button{
+input,button{
   width:100%;
-  margin-top:20px;
-  padding:14px;
-  background:linear-gradient(135deg,#00ff9c,#00b36b);
-  border:none;
-  border-radius:16px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  color:#001a10;
-  transition:.25s;
-}
-
-button:hover{
-  transform:scale(1.06);
-  box-shadow:0 0 28px #00ff9c;
-}
-
-/* MESAJ */
-#msg{
-  margin-top:12px;
-  font-size:13px;
-}
-
-/* FOOTER */
-.footer{
-  margin-top:22px;
-  font-size:11px;
-  color:#66ffbf;
-  opacity:.75;
-}
-
-.footer span{
+  padding:12px;
+  margin-top:10px;
+  background:#000;
+  border:1px solid #00ff9c;
   color:#00ff9c;
-  text-shadow:0 0 8px #00ff9c;
+  border-radius:12px;
+}
+
+button{
+  background:#00ff9c;
+  color:#001a10;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.result{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid #00ff9c;
+  border-radius:12px;
 }
 </style>
-</head>
-
-<body>
-
-<div class="card">
-
-  <!-- LOGO -->
-  <img src="rush-shop-logo.png" class="logo" onerror="this.style.display='none'">
-
-  <h1>Rush Shop</h1>
-  <div class="sub">ONLINE STORE</div>
-
-  <input id="nick" placeholder="Nickname">
-  <input id="pass" type="password" placeholder="Şifre">
-
-  <button onclick="login()">Giriş Yap</button>
-
-  <div id="msg"></div>
-
-  <div class="footer">
-    © <span>2025</span> Rush Shop – Tüm Hakları Saklıdır
-  </div>
-
-</div>
 
 <script>
+const API = "https://rush-license-system.vercel.app/arama-motoru/licenses.json";
+
+document.getElementById("app").innerHTML = `
+  <div class="card">
+    <h2>Rush Shop</h2>
+    <input id="nick" placeholder="Nickname">
+    <input id="pass" type="password" placeholder="Şifre">
+    <button onclick="login()">Giriş</button>
+    <div id="msg"></div>
+  </div>
+`;
+
 async function login(){
-  const nick = document.getElementById("nick").value;
-  const pass = document.getElementById("pass").value;
-  const msg  = document.getElementById("msg");
+  const nick = nick.value;
+  const pass = pass.value;
+  const msg = document.getElementById("msg");
 
   try{
-    const r = await fetch("https://rush-license-system.vercel.app/arama-motoru/licenses.json",{
+    const r = await fetch(API+"/api/login",{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ nickname:nick, password:pass })
+      body:JSON.stringify({nickname:nick,password:pass})
     });
     const d = await r.json();
+    if(!d.success) return msg.innerText="❌ "+d.error;
 
-    if(!d.success){
-      msg.innerText = "❌ " + d.error;
-      return;
-    }
-
-    sessionStorage.setItem("licensed","1");
-    sessionStorage.setItem("days",d.daysLeft);
-    location.href = "search.html";
-
+    showSearch();
   }catch{
-    msg.innerText = "❌ Sunucuya bağlanılamadı";
+    msg.innerText="❌ Sunucuya bağlanılamadı";
+  }
+}
+
+function showSearch(){
+  document.getElementById("app").innerHTML = `
+    <div class="card">
+      <h2>🔎 Arama</h2>
+      <input id="q" placeholder="Ara...">
+      <button onclick="search()">Ara</button>
+      <div id="results"></div>
+    </div>
+  `;
+}
+
+async function search(){
+  const q = document.getElementById("q").value;
+  const rbox = document.getElementById("results");
+  rbox.innerText="Aranıyor...";
+
+  try{
+    const r = await fetch(API+"/api/search?q="+encodeURIComponent(q));
+    const d = await r.json();
+    rbox.innerHTML="";
+    d.results.forEach(x=>{
+      rbox.innerHTML+=`
+        <div class="result">
+          <b>${x.title}</b><br>
+          <a href="${x.url}" target="_blank">${x.url}</a>
+        </div>
+      `;
+    });
+  }catch{
+    rbox.innerText="❌ Sunucu hatası";
   }
 }
 </script>
-
-</body>
-</html>
