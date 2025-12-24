@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Lisans Girişi</title>
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:black;
+  color:#0ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial;
+}
+.box{
+  padding:30px;
+  border:1px solid #0ff;
+  border-radius:12px;
+  box-shadow:0 0 25px #0ff;
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  background:black;
+  border:1px solid #0ff;
+  color:#0ff;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h3>🔐 Lisans Girişi</h3>
+
+  <input id="apiip" placeholder="API IP (örn: 1.2.3.4)">
+  <input id="nick" placeholder="Nickname">
+  <input id="pass" type="password" placeholder="Şifre">
+
+  <button onclick="login()">Giriş</button>
+  <p id="msg"></p>
+</div>
+
+<script>
+async function login(){
+  const ip   = document.getElementById("apiip").value;
+  const nick = document.getElementById("nick").value;
+  const pass = document.getElementById("pass").value;
+  const msg  = document.getElementById("msg");
+
+  const url = `https://${ip}/api/license?nick=${nick}&pass=${pass}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(!data.success){
+      msg.innerText = "❌ " + data.error;
+      return;
+    }
+
+    localStorage.setItem("licensed","true");
+    localStorage.setItem("daysLeft",data.daysLeft);
+
+    window.location.href = "search.html";
+  } catch {
+    msg.innerText = "❌ API bağlantı hatası";
+  }
+}
+</script>
+
+</body>
+</html>
